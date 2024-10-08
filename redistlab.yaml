@@ -1,0 +1,126 @@
+---
+-  name: Configure R1, R2 and R3 with basic Configs
+   hosts: cisco
+   gather_facts: no
+   tasks:
+    - name: R1 Basic Configuration
+      ios_config:
+        lines:
+          - interface g0/0/0
+          - description Connection to rae00033-R2
+          - ip add 172.16.0.2 255.255.255.252
+          - no shut
+          - interface Lo1
+          - ip address 172.16.1.1 255.255.255.0
+          - interface Lo12
+          - ip address 172.16.12.1 255.255.255.192
+          - interface Lo13
+          - ip address 172.16.13.1 255.255.255.224
+          - interface Lo14
+          - ip address 172.16.14.1 255.255.255.240
+          - interface Lo15
+          - ip address 172.16.15.1 255.255.255.248
+
+      when: inventory_hostname == '192.168.100.1'
+
+    - name: R1 EIGRP Configuration
+      ios_config:
+        lines:
+          - router eigrp 76
+          - router-id 76.1.1.1
+          - network 172.16.0.0
+
+      when: inventory_hostname == '192.168.100.1'
+
+
+
+    - name: R2 EIGRP Configuration
+      ios_config:
+        lines:
+          - router eigrp 76
+          - router-id 76.2.2.2
+          - network 172.16.0.0
+
+      when: inventory_hostname == '192.168.100.2'
+
+
+    - name: R2 OSPF Configuration
+      ios_config:
+        lines:
+          - router ospf 76
+          - router-id 76.2.2.2
+
+      when: inventory_hostname =='192.168.100.2'
+
+    - name: R2 Basic Configs
+      ios_config:
+        lines:
+          - interface g0/0/0
+          - description Connection to rae00033-R1
+          - ip address 172.16.0.1 255.255.255.252
+          - no shutdown
+          - interface GigabitEthernet0/0/1
+          - description Connection to rae00033-R3
+          - ip address 192.168.0.1 255.255.255.252
+          - ip ospf 76 area 0
+          - no shut
+          - int lo10
+          - ip add 10.10.10.1 255.255.255.0
+          - ip ospf 76 area 10
+          - ip ospf network point-to-point
+
+      when: inventory_hostname == '192.168.100.2'
+
+    - name: R3 OSPF configuration
+      ios_config:
+        lines:
+          - router ospf 76
+          - router-id 76.3.3.3
+
+      when: inventory_hostname == '192.168.100.3'
+
+    - name: R3 Basic configs
+      ios_config:
+        lines:
+          - interface g0/0/0
+          - description Connection to rae00033-R2
+          - ip add 192.168.0.2 255.255.255.252
+          - no shut
+          - interface Lo3
+          - ip add 192.168.3.1 255.255.255.0
+          - ip ospf 76 area 0
+          - ip ospf network point-to-point
+          - interface Lo32
+          - ip add 192.168.32.1 255.255.255.0
+          - ip ospf 76 area 0
+          - ip ospf network point-to-point
+          - interface Lo33
+          - ip add 192.168.33.1 255.255.255.0
+          - ip ospf 76 area 0
+          - ip ospf network point-to-point
+          - interface Lo34
+          - ip add 192.168.34.1 255.255.255.0
+          - ip ospf 76 area 0
+          - ip ospf network point-to-point
+          - interface Lo35
+          - ip add 192.168.35.1 255.255.255.0
+          - ip ospf 76 area 0
+          - ip ospf network point-to-point
+          - interface Lo20
+          - ip add 192.168.20.1 255.255.255.0
+          - ip ospf 76 area 20
+          - ip ospf network point-to-point
+          - interface Lo21
+          - ip add 192.168.21.1 255.255.255.0
+          - ip ospf 76 area 20
+          - ip ospf network point-to-point
+          - interface Lo22
+          - ip add 192.168.22.1 255.255.255.0
+          - ip ospf 76 area 20
+          - ip ospf network point-to-point
+          - interface Lo23
+          - ip add 192.168.23.1 255.255.255.0
+          - ip ospf 76 area 20
+          - ip ospf network point-to-point
+
+      when: inventory_hostname == '192.168.100.3'

@@ -1,0 +1,38 @@
+---
+-  name: Configure MikroTik Routers
+   hosts: mikrotik
+   gather_facts: no
+   tasks:
+    - name: Configure T1 Router fully with ISIS
+      routeros_command:
+       commands:
+         - /system identity set name=Rae00033-T-76-1
+         - /interface bridge add name=ether1
+         - /ip address add address=172.16.76.1/24 interface=ether1
+         - /routing isis instance add areas=49.0076 disabled=no name=isis-76 system-id=4c00.0000.0001
+         - /routing isis interface-template add instance=isis-76 interface=ether1 levels=l1,l2
+         - /routing isis interface-template add instance=isis-76 interface=ether2 levels=l1
+
+      when: inventory_hostname == '192.168.1.42'
+
+
+    - name: Configure T2 Router fully with ISIS
+      routeros_command:
+       commands:
+         - /system identity set name=Rae00033-T-76-2
+         - /interface bridge add name=Loopback21
+         - /interface bridge add name=Loopback22
+         - /interface bridge add name=Loopback23
+         - /interface bridge add name=ether2
+         - /ip address add address=10.76.21.2/24 interface=Loopback21
+         - /ip address add address=10.76.22.2/24 interface=Loopback22
+         - /ip address add address=10.76.23.2/24 interface=Loopback23
+         - /ip address add address=10.76.12.2/24 interface=ether2
+         - /routing isis instance add areas=49.0076 name=isis-76 system-id=4c00.0000.0002
+         - /routing isis interface-template add instance=isis-76 interfaces=ether2 level=l1
+         - /routing isis interface-template add instance=isis-76 interfaces=ether2 level=l1
+         - /routing isis interface-template add instance=isis-76 interfaces=Loopback21 level=l1
+         - /routing isis interface-template add instance=isis-76 interfaces=Loopback22 level=l1
+         - /routing isis interface-template add instance=isis-76 interfaces=loopback23 level=l1
+
+      when: inventory_hostname == '192.168.1.43'
