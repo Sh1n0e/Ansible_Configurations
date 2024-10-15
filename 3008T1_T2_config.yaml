@@ -13,7 +13,7 @@
          - /routing isis interface-template add instance=isis-76 interface=ether1 levels=l1,l2
          - /routing isis interface-template add instance=isis-76 interface=ether2 levels=l1
 
-      when: inventory_hostname == '192.168.1.42'
+      when: inventory_hostname == '10.76.12.1'
 
 
     - name: Configure T2 Router fully with ISIS
@@ -35,4 +35,4 @@
          - /routing isis interface-template add instance=isis-76 interfaces=Loopback22 level=l1
          - /routing isis interface-template add instance=isis-76 interfaces=loopback23 level=l1
 
-      when: inventory_hostname == '192.168.1.43'
+      when: inventory_hostname == '10.76.12.2'
