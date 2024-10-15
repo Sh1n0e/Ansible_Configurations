@@ -1,0 +1,11 @@
+---
+-  name: Configure R1
+   hosts: cisco
+   gather_facts: no
+   tasks:
+    - name: R1
+      cisco.ios.ios_command:
+        commands:
+          - show version
+          - show interfaces
+
